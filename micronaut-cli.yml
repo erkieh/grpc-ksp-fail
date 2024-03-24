@@ -1,0 +1,6 @@
+applicationType: grpc
+defaultPackage: com.example
+testFramework: kotest
+sourceLanguage: kotlin
+buildTool: gradle_kotlin
+features: [app-name, discovery-core, gradle, grpc, http-client-test, kotest, kotlin, kotlin-application, ksp, logback, micronaut-build, properties, readme, serialization-jackson, shade]
