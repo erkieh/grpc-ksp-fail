@@ -1,4 +1,3 @@
 
 
-rootProject.name="demo"
-
+rootProject.name = "demo"

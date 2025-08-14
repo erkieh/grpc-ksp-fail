@@ -1,17 +1,18 @@
-import com.google.protobuf.gradle.*
+import com.google.protobuf.gradle.id
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.9.23"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.9.23"
-    id("com.google.devtools.ksp") version "1.9.23-1.0.19"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.micronaut.application") version "4.3.5"
-    id("com.google.protobuf") version "0.9.2"
+    id("org.jetbrains.kotlin.jvm") version "2.2.10-RC2"
+    id("org.jetbrains.kotlin.plugin.allopen") version "2.2.10-RC2"
+    id("com.google.devtools.ksp") version "2.2.10-RC2-2.0.2"
+    id("com.gradleup.shadow") version "8.3.8"
+    id("io.micronaut.application") version "4.5.4"
+    id("com.google.protobuf") version "0.9.5"
+    id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
 }
 
 version = "0.1"
 group = "com.example"
 
-val kotlinVersion=project.properties.get("kotlinVersion")
+val kotlinVersion = project.properties.get("kotlinVersion")
 repositories {
     mavenCentral()
 }
@@ -24,12 +25,11 @@ dependencies {
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("javax.annotation:javax.annotation-api")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 }
-
 
 application {
     mainClass.set("com.example.ApplicationKt")
@@ -37,7 +37,6 @@ application {
 java {
     sourceCompatibility = JavaVersion.toVersion("21")
 }
-
 
 sourceSets {
     main {
@@ -81,5 +80,23 @@ tasks.named<io.micronaut.gradle.docker.MicronautDockerfile>("dockerfile") {
 tasks.named<io.micronaut.gradle.docker.NativeImageDockerfile>("dockerfileNative") {
     jdkVersion.set("21")
 }
+configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    verbose.set(true)
+}
 
-
+ktlint {
+    filter {
+        exclude { elem ->
+            elem.file.path.contains(
+                layout.buildDirectory
+                    .dir("generated")
+                    .get()
+                    .toString(),
+            )
+        }
+        include("**/kotlin/**")
+    }
+}
+ktlint {
+    version.set("1.7.1")
+}
